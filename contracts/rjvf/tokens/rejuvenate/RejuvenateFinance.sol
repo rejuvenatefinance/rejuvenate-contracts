@@ -10,6 +10,8 @@ contract RejuvenateFinance is ERC20, ERC20Burnable, Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
+  uint256 public constant MAX_SUPPLY = 10000000 ether;
+
   constructor() ERC20("Rejuvenate Finance", "RJVF") {
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _grantRole(PAUSER_ROLE, msg.sender);
@@ -28,6 +30,7 @@ contract RejuvenateFinance is ERC20, ERC20Burnable, Pausable, AccessControl {
     address to,
     uint256 amount
   ) public whenNotPaused onlyRole(MINTER_ROLE) {
+    require(totalSupply() + amount <= MAX_SUPPLY, "!max_supply");
     _mint(to, amount);
   }
 
